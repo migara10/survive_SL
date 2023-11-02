@@ -58,6 +58,22 @@
           v-model="productData.description"
         ></textarea>
       </div>
+      <!-- supermarket name -->
+      <div class="select-unit default-input">
+        <div class="search-box2">
+          <p>Select Supermarket</p>
+          <label v-for="shop in shops" :key="shops.id" class="radio-style">
+            <input
+              type="radio"
+              placeholder="Select Supermarket"
+              v-model="productData.shop"
+              :value="shop.text"
+              :id="'shop_' + shop.id"
+            />
+            {{ shop.text }}
+          </label>
+        </div>
+      </div>
       <!-- product unit -->
       <div class="select-unit default-input">
         <div class="search-box2">
@@ -76,7 +92,7 @@
       </div>
       <!-- upload button -->
       <div class="on-upload">
-        <button class="" @click="onUpload()">Upload Image</button>
+        <button class="" @click="onUpload()">Save Item</button>
       </div>
     </div>
   </div>
@@ -100,12 +116,19 @@ export default {
       name: '',
       description: '',
       unit: '',
-      price: ''
+      price: '',
+      shop: '',
     })
 
     const units = ref([
       { id: 1, text: 'Liter' },
       { id: 2, text: 'Kilo' }
+    ])
+    const shops = ref([
+      { id: 1, text: 'Lidl' },
+      { id: 2, text: 'Prisma' },
+      { id: 3, text: 'S-market' },
+
     ])
 
     const filterOptions = computed(() => {
@@ -135,6 +158,7 @@ export default {
       fd.append('description', productData.value.description)
       fd.append('unit', productData.value.unit)
       fd.append('price', productData.value.price)
+      fd.append('shop', productData.value.shop)
       selectImage.value = null
       axios
         .post('item', fd)
@@ -174,7 +198,6 @@ export default {
       })
       $('html').click(function (event) {
         if (!$(event.target).is('.search-box')) {
-          console.log('Clicked outside the search box')
           $('.options').hide()
         }
       })
@@ -194,6 +217,7 @@ export default {
       productData,
       filterOptions,
       units,
+      shops,
       imageURL
     }
   }
